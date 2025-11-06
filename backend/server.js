@@ -20,7 +20,7 @@ const httpServer = createServer(app);
 // CORS setup (for local + production)
 const allowedOrigin =
   process.env.NODE_ENV === 'production'
-    ? 'https://slot-swapper.netlify.app'
+    ? 'https://slotswappe1.netlify.app/'
     : 'http://localhost:5173';
 
 // Socket.IO setup
