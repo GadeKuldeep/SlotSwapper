@@ -43,11 +43,14 @@ app.use(
     origin: (origin, callback) => {
       // Allow non-browser requests like Postman (no origin)
       if (!origin) return callback(null, true);
-      if (allowedOrigins.indexOf(origin) !== -1) {
-        return callback(null, true);
+      const allowed = allowedOrigins.indexOf(origin) !== -1;
+      if (!allowed) {
+        console.warn('Blocked CORS origin:', origin);
       }
-      return callback(new Error('CORS policy: Origin not allowed'));
+      return callback(null, allowed);
     },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   })
 );
