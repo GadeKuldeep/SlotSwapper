@@ -17,24 +17,37 @@ connectDB();
 const app = express();
 const httpServer = createServer(app);
 
-// CORS setup (for local + production)
-const allowedOrigin =
-  process.env.NODE_ENV === 'production'
-    ? 'https://slotswappe1.netlify.app/'
-    : 'http://localhost:5173';
+// CORS setup: allow multiple origins and read from env var when provided
+// Set ALLOWED_ORIGINS in production to a comma-separated list (no trailing slashes),
+// e.g. 'https://slotswappe1.netlify.app,https://your-other-domain.com'
+const defaultOrigins = ['http://localhost:5173', 'http://localhost:3000'];
+const productionDefault = ['https://slotswappe1.netlify.app'];
+
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',').map((s) => s.trim())
+  : process.env.NODE_ENV === 'production'
+  ? productionDefault
+  : defaultOrigins;
 
 // Socket.IO setup
 const io = new Server(httpServer, {
   cors: {
-    origin: allowedOrigin,
+    origin: allowedOrigins,
     methods: ['GET', 'POST'],
   },
 });
 
-// Middleware
+// Middleware: dynamically validate origin and support credentials
 app.use(
   cors({
-    origin: allowedOrigin,
+    origin: (origin, callback) => {
+      // Allow non-browser requests like Postman (no origin)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        return callback(null, true);
+      }
+      return callback(new Error('CORS policy: Origin not allowed'));
+    },
     credentials: true,
   })
 );
