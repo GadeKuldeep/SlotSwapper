@@ -2,9 +2,11 @@ services:
   - type: web
     name: slotswapper-backend
     env: node
-    rootDir: backend
-    buildCommand: npm install
-    startCommand: node server.js
+    plan: free
+    branch: main
+    root: backend
+    buildCommand: "npm install"
+    startCommand: "npm start"
     envVars:
       - key: NODE_ENV
         value: production
