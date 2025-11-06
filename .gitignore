@@ -1,0 +1,19 @@
+# Node modules
+backend/node_modules/
+frontend/node_modules/
+
+# Environment variables
+backend/.env
+
+# Build files
+frontend/dist/
+
+# Logs
+*.log
+
+# Vite cache
+frontend/.vite/
+
+# Misc
+.DS_Store
+Thumbs.db
