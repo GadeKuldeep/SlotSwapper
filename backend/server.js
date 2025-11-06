@@ -17,18 +17,27 @@ connectDB();
 const app = express();
 const httpServer = createServer(app);
 
+// CORS setup (for local + production)
+const allowedOrigin =
+  process.env.NODE_ENV === 'production'
+    ? 'https://slot-swapper.netlify.app'
+    : 'http://localhost:5173';
+
 // Socket.IO setup
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.NODE_ENV === 'production' 
-      ? 'https://your-production-domain.com' 
-      : 'http://localhost:3000',
+    origin: allowedOrigin,
     methods: ['GET', 'POST'],
   },
 });
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: allowedOrigin,
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 // Routes
@@ -56,5 +65,5 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5001;
 
 httpServer.listen(PORT, () => {
-  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+  console.log(`✅ Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
 });

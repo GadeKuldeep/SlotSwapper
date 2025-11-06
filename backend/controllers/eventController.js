@@ -55,6 +55,9 @@ const updateEvent = asyncHandler(async (req, res) => {
 // @route   DELETE /api/events/:id
 // @access  Private
 const deleteEvent = asyncHandler(async (req, res) => {
+  // Log for debugging in case of unexpected failures
+  console.log('Attempting to delete event', req.params.id, 'by user', req.user?._id);
+
   const event = await Event.findById(req.params.id);
 
   if (!event) {
@@ -67,7 +70,15 @@ const deleteEvent = asyncHandler(async (req, res) => {
     throw new Error('Not authorized to delete this event');
   }
 
-  await event.remove();
+  // Use findByIdAndDelete to avoid potential issues with document.remove()
+  const deleted = await Event.findByIdAndDelete(req.params.id);
+
+  if (!deleted) {
+    // This is unlikely since we checked above, but guard anyway
+    res.status(500);
+    throw new Error('Failed to delete event');
+  }
+
   res.json({ message: 'Event removed' });
 });
 

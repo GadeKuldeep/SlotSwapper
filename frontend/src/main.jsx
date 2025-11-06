@@ -9,8 +9,9 @@ import 'react-toastify/dist/ReactToastify.css';
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <AuthProvider>
-      <App />
-      <ToastContainer />
+  <App />
+  {/* Disable draggable to avoid passive event listener preventDefault warnings on touch devices */}
+  <ToastContainer draggable={false} />
     </AuthProvider>
   </React.StrictMode>
 );
