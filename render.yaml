@@ -10,3 +10,6 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      - key: ALLOWED_ORIGINS
+        # Comma-separated list of allowed origins (no trailing slashes). Edit as needed in Render UI instead of committing secrets.
+        value: "https://slotswappe1.netlify.app,https://slotswapper-1-lxyn.onrender.com,http://localhost:5173"
